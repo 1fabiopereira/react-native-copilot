@@ -42,6 +42,7 @@ const copilot = ({
   stopOnOutsideClick = false,
   svgMaskPath,
   verticalOffset = 0,
+  fnOffset = () => verticalOffset,
   wrapperStyle,
 } = {}) =>
   (WrappedComponent) => {
@@ -179,14 +180,18 @@ const copilot = ({
       }
 
       async moveToCurrentStep(): void {
-        const size = await this.state.currentStep.target.measure();
+        try {
+          const size = await this.state.currentStep.target.measure();
+          const {order} = this.state.currentStep;
+          verticalOffset = fnOffset(order);
 
-        await this.modal.animateMove({
-          width: size.width + OFFSET_WIDTH,
-          height: size.height + OFFSET_WIDTH,
-          left: size.x - (OFFSET_WIDTH / 2),
-          top: (size.y - (OFFSET_WIDTH / 2)) + verticalOffset,
-        });
+          await this.modal.animateMove({
+            width: size.width + OFFSET_WIDTH,
+            height: size.height + OFFSET_WIDTH,
+            left: size.x - (OFFSET_WIDTH / 2),
+            top: (size.y - (OFFSET_WIDTH / 2)) + verticalOffset,
+          });
+        } catch(e){}
       }
 
       render() {
