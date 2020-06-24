@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import {Dimensions} from 'react-native';
 import PropTypes from 'prop-types';
 
 import { findNodeHandle, View } from 'react-native';
@@ -29,6 +30,8 @@ type State = {
   scrollView?: React.RefObject,
   stopOnOutsideClick?: boolean,
 };
+
+const {width} = Dimensions.get('window');
 
 const copilot = ({
   overlay,
@@ -182,6 +185,7 @@ const copilot = ({
       async moveToCurrentStep(): void {
         try {
           const size = await this.state.currentStep.target.measure();
+          size.x = size.x === width ? 0 : size.x;
           const {order} = this.state.currentStep;
           verticalOffset = fnOffset(order);
 
